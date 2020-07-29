@@ -72,12 +72,11 @@ func (s *Compact) Unserialize(input string) *jws.Jws {
     WithPayload(string(payload)).
     WithEncodedPayload(encodedPayload).
     WithIsPayloadDetached(!hasPayload).
-    AddSignature(
-      signature.NewBuilder().
-        WithSignature(sign).
-        WithProtectedHeader(protectedHeader).
-        WithEncodedProtectedHeader(encodedProtectedHeader).
-        Build(),
+    AddSignatureInputParams(signature.NewInputParamsBuilder().
+      WithSignature(sign).
+      WithProtectedHeader(protectedHeader).
+      WithEncodedProtectedHeader(encodedProtectedHeader).
+      Build(),
     ).
     Build()
 }

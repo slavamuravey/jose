@@ -2,6 +2,7 @@ package signature
 
 import (
   "fmt"
+  "github.com/slavamuravey/jose/jwk"
 )
 
 type ProtectedHeader map[string]interface{}
@@ -63,4 +64,84 @@ func IsPayloadEncoded(protectedHeader ProtectedHeader) bool {
   v, isBool := v.(bool)
 
   return !hasB64 || isBool && true == v.(bool)
+}
+
+type InputParams struct {
+  key                    jwk.Jwk
+  signature              []byte
+  protectedHeader        ProtectedHeader
+  encodedProtectedHeader string
+  header                 Header
+}
+
+func (p *InputParams) Key() jwk.Jwk {
+  return p.key
+}
+
+func (p *InputParams) Signature() []byte {
+  return p.signature
+}
+
+func (p *InputParams) ProtectedHeader() ProtectedHeader {
+  return p.protectedHeader
+}
+
+func (p *InputParams) EncodedProtectedHeader() string {
+  return p.encodedProtectedHeader
+}
+
+func (p *InputParams) Header() Header {
+  return p.header
+}
+
+type InputParamsBuilder struct {
+  key                    jwk.Jwk
+  signature              []byte
+  protectedHeader        ProtectedHeader
+  encodedProtectedHeader string
+  header                 Header
+}
+
+func NewInputParamsBuilder() *InputParamsBuilder {
+  return &InputParamsBuilder{}
+}
+
+func (b *InputParamsBuilder) WithSignature(signature []byte) *InputParamsBuilder {
+  b.signature = signature
+
+  return b
+}
+
+func (b *InputParamsBuilder) WithKey(key jwk.Jwk) *InputParamsBuilder {
+  b.key = key
+
+  return b
+}
+
+func (b *InputParamsBuilder) WithProtectedHeader(protectedHeader ProtectedHeader) *InputParamsBuilder {
+  b.protectedHeader = protectedHeader
+
+  return b
+}
+
+func (b *InputParamsBuilder) WithEncodedProtectedHeader(encodedProtectedHeader string) *InputParamsBuilder {
+  b.encodedProtectedHeader = encodedProtectedHeader
+
+  return b
+}
+
+func (b *InputParamsBuilder) WithHeader(header Header) *InputParamsBuilder {
+  b.header = header
+
+  return b
+}
+
+func (b *InputParamsBuilder) Build() *InputParams {
+  return &InputParams{
+    key: b.key,
+    signature: b.signature,
+    protectedHeader: b.protectedHeader,
+    encodedProtectedHeader: b.encodedProtectedHeader,
+    header: b.header,
+  }
 }

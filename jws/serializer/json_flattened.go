@@ -81,13 +81,12 @@ func (s *JsonFlattened) Unserialize(input string) *jws.Jws {
     WithPayload(payload).
     WithEncodedPayload(encodedPayload.(string)).
     WithIsPayloadDetached(encodedPayload.(string) == "").
-    AddSignature(
-      signature.NewBuilder().
-        WithSignature(sign).
-        WithProtectedHeader(protectedHeader).
-        WithEncodedProtectedHeader(encodedProtectedHeader.(string)).
-        WithHeader(header.(signature.Header)).
-        Build(),
+    AddSignatureInputParams(signature.NewInputParamsBuilder().
+      WithSignature(sign).
+      WithProtectedHeader(protectedHeader).
+      WithEncodedProtectedHeader(encodedProtectedHeader.(string)).
+      WithHeader(header.(signature.Header)).
+      Build(),
     ).
     Build()
 }
