@@ -4,15 +4,16 @@ import (
   "errors"
   "fmt"
   "github.com/slavamuravey/jose/internal/utils"
-  "github.com/slavamuravey/jose/jwa"
+  "github.com/slavamuravey/jose/jwa/signature/hmac"
   "github.com/slavamuravey/jose/jwk"
+  "strings"
 )
 
 type Builder struct {
   signature []byte
   key jwk.Jwk
   encodedPayload string
-  protectedHeader ProtectedHeader
+  protectedHeader Header
   encodedProtectedHeader string
   header Header
 }
@@ -39,7 +40,7 @@ func (b *Builder) WithEncodedPayload(encodedPayload string) *Builder {
   return b
 }
 
-func (b *Builder) WithProtectedHeader(protectedHeader ProtectedHeader) *Builder {
+func (b *Builder) WithProtectedHeader(protectedHeader Header) *Builder {
   b.protectedHeader = protectedHeader
 
   return b
@@ -59,17 +60,23 @@ func (b *Builder) WithHeader(header Header) *Builder {
 
 func (b *Builder) Build() *Signature {
   b.checkB64AndCriticalHeader()
+  b.checkDuplicatedHeaderParameters(b.protectedHeader, b.header)
 
-  signature, err := b.Signature()
+  if b.key != nil {
+    jwk.CheckKeyUsage(b.key, "signature")
+    jwk.CheckKeyAlgorithm(b.key, "HS384")
+  }
+
+  sign, err := b.Signature()
 
   if err != nil {
     panic(err.Error())
   }
 
-  s := &Signature{encodedProtectedHeader: b.encodedProtectedHeader, signature: signature, header: b.header}
+  s := &Signature{encodedProtectedHeader: b.encodedProtectedHeader, signature: sign, header: b.header}
 
   if b.encodedProtectedHeader == "" {
-    s.protectedHeader = make(ProtectedHeader)
+    s.protectedHeader = make(Header)
   } else {
     s.protectedHeader = b.protectedHeader
   }
@@ -100,6 +107,13 @@ func (b *Builder) checkB64AndCriticalHeader() {
   }
 }
 
+func (b *Builder) checkDuplicatedHeaderParameters(header1, header2 Header) {
+  i := utils.Intersect(utils.MapKeys(header1), utils.MapKeys(header2))
+  if len(i) > 0 {
+    panic(fmt.Sprintf("The header contains duplicated entries: %s", strings.Join(i, ", ")))
+  }
+}
+
 func (b *Builder) Signature() ([]byte, error) {
   if len(b.signature) > 0 {
     return b.signature, nil
@@ -113,7 +127,10 @@ func (b *Builder) Signature() ([]byte, error) {
     return nil, errors.New("payload is not set")
   }
 
-  return jwa.Sign(b.key.(jwk.Oct), fmt.Sprintf(
+  // alg := &signature.HS256{}
+  alg := &hmac.HS384{}
+
+  return alg.Hash(b.key.(jwk.Oct), fmt.Sprintf(
     "%s.%s",
     b.encodedProtectedHeader,
     b.encodedPayload,

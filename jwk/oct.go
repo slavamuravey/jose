@@ -9,7 +9,7 @@ type Oct struct {
   // jwk fields
   kty string
   use string
-  keyOps string
+  keyOps []string
   alg string
   kid string
   x5u string
@@ -28,7 +28,7 @@ func (k Oct) Use() string {
   return k.use
 }
 
-func (k Oct) KeyOps() string {
+func (k Oct) KeyOps() []string {
   return k.keyOps
 }
 

@@ -15,7 +15,7 @@ func (b *EcPublicBuilder) Use(value string) *EcPublicBuilder {
   return b
 }
 
-func (b *EcPublicBuilder) KeyOps(value string) *EcPublicBuilder {
+func (b *EcPublicBuilder) KeyOps(value []string) *EcPublicBuilder {
   b.ecPublic.keyOps = value
   return b
 }
@@ -84,7 +84,7 @@ func (b *EcPrivateBuilder) Use(value string) *EcPrivateBuilder {
   return b
 }
 
-func (b *EcPrivateBuilder) KeyOps(value string) *EcPrivateBuilder {
+func (b *EcPrivateBuilder) KeyOps(value []string) *EcPrivateBuilder {
   b.ecPrivate.keyOps = value
   return b
 }

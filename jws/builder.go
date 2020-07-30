@@ -67,7 +67,7 @@ func (b *Builder) Build() *Jws {
   jws := &Jws{payload: b.payload, encodedPayload: b.EncodedPayload(), isPayloadDetached: b.isPayloadDetached}
 
   for _, params := range b.signatureInputParams {
-    signature := signature.NewBuilder().
+    s := signature.NewBuilder().
       WithKey(params.Key()).
       WithSignature(params.Signature()).
       WithEncodedPayload(b.EncodedPayload()).
@@ -75,7 +75,7 @@ func (b *Builder) Build() *Jws {
       WithEncodedProtectedHeader(b.EncodedProtectedHeader(&params)).
       WithHeader(params.Header()).
       Build()
-    jws.signatures = append(jws.signatures, *signature)
+    jws.signatures = append(jws.signatures, *s)
   }
 
   return jws

@@ -15,7 +15,7 @@ func (b *OctBuilder) Use(value string) *OctBuilder {
   return b
 }
 
-func (b *OctBuilder) KeyOps(value string) *OctBuilder {
+func (b *OctBuilder) KeyOps(value []string) *OctBuilder {
   b.Oct.keyOps = value
   return b
 }

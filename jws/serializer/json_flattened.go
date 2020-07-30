@@ -53,7 +53,7 @@ func (s *JsonFlattened) Unserialize(input string) *jws.Jws {
 
   encodedProtectedHeader, ok := data["protected"]
 
-  var protectedHeader signature.ProtectedHeader
+  var protectedHeader signature.Header
 
   if ok {
     decodedProtectedHeader, _ := base64.RawURLEncoding.DecodeString(encodedProtectedHeader.(string))

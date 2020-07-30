@@ -15,7 +15,7 @@ func (b *OkpBuilder) Use(value string) *OkpBuilder {
   return b
 }
 
-func (b *OkpBuilder) KeyOps(value string) *OkpBuilder {
+func (b *OkpBuilder) KeyOps(value []string) *OkpBuilder {
   b.Okp.keyOps = value
   return b
 }

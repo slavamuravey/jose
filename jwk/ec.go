@@ -20,7 +20,7 @@ type EcPublic struct {
   // jwk fields
   kty string
   use string
-  keyOps string
+  keyOps []string
   alg string
   kid string
   x5u string
@@ -41,7 +41,7 @@ func (k EcPublic) Use() string {
   return k.use
 }
 
-func (k EcPublic) KeyOps() string {
+func (k EcPublic) KeyOps() []string {
   return k.keyOps
 }
 
@@ -85,7 +85,7 @@ type EcPrivate struct {
   // jwk fields
   kty string
   use string
-  keyOps string
+  keyOps []string
   alg string
   kid string
   x5u string
@@ -108,7 +108,7 @@ func (k EcPrivate) Use() string {
   return k.use
 }
 
-func (k EcPrivate) KeyOps() string {
+func (k EcPrivate) KeyOps() []string {
   return k.keyOps
 }
 

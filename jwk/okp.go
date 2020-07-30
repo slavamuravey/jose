@@ -11,7 +11,7 @@ type Okp struct {
   // jwk fields
   kty string
   use string
-  keyOps string
+  keyOps []string
   alg string
   kid string
   x5u string
@@ -32,7 +32,7 @@ func (k Okp) Use() string {
   return k.use
 }
 
-func (k Okp) KeyOps() string {
+func (k Okp) KeyOps() []string {
   return k.keyOps
 }
 

@@ -5,17 +5,16 @@ import (
   "github.com/slavamuravey/jose/jwk"
 )
 
-type ProtectedHeader map[string]interface{}
-type Header map[string]string
+type Header map[string]interface{}
 
 type Signature struct {
   encodedProtectedHeader string
-  protectedHeader        ProtectedHeader
+  protectedHeader        Header
   header                 Header
   signature              []byte
 }
 
-func (s *Signature) ProtectedHeader() ProtectedHeader {
+func (s *Signature) ProtectedHeader() Header {
   return s.protectedHeader
 }
 
@@ -51,7 +50,7 @@ func (s *Signature) HasHeaderParameter(key string) bool {
   return ok
 }
 
-func (s *Signature) HeaderParameter(key string) (string, error) {
+func (s *Signature) HeaderParameter(key string) (interface{}, error) {
   if s.HasHeaderParameter(key) {
     return s.Header()[key], nil
   }
@@ -59,7 +58,7 @@ func (s *Signature) HeaderParameter(key string) (string, error) {
   return "", fmt.Errorf(`the header "%s" does not exist`, key)
 }
 
-func IsPayloadEncoded(protectedHeader ProtectedHeader) bool {
+func IsPayloadEncoded(protectedHeader Header) bool {
   v, hasB64 := protectedHeader["b64"]
   v, isBool := v.(bool)
 
@@ -69,7 +68,7 @@ func IsPayloadEncoded(protectedHeader ProtectedHeader) bool {
 type InputParams struct {
   key                    jwk.Jwk
   signature              []byte
-  protectedHeader        ProtectedHeader
+  protectedHeader        Header
   encodedProtectedHeader string
   header                 Header
 }
@@ -82,7 +81,7 @@ func (p *InputParams) Signature() []byte {
   return p.signature
 }
 
-func (p *InputParams) ProtectedHeader() ProtectedHeader {
+func (p *InputParams) ProtectedHeader() Header {
   return p.protectedHeader
 }
 
@@ -97,7 +96,7 @@ func (p *InputParams) Header() Header {
 type InputParamsBuilder struct {
   key                    jwk.Jwk
   signature              []byte
-  protectedHeader        ProtectedHeader
+  protectedHeader        Header
   encodedProtectedHeader string
   header                 Header
 }
@@ -118,7 +117,7 @@ func (b *InputParamsBuilder) WithKey(key jwk.Jwk) *InputParamsBuilder {
   return b
 }
 
-func (b *InputParamsBuilder) WithProtectedHeader(protectedHeader ProtectedHeader) *InputParamsBuilder {
+func (b *InputParamsBuilder) WithProtectedHeader(protectedHeader Header) *InputParamsBuilder {
   b.protectedHeader = protectedHeader
 
   return b

@@ -51,7 +51,7 @@ func (s *Compact) Unserialize(input string) *jws.Jws {
   encodedPayload := parts[1]
   encodedSignature := parts[2]
   var payload []byte
-  var protectedHeader signature.ProtectedHeader
+  var protectedHeader signature.Header
 
   decodedHeader, _ := base64.RawURLEncoding.DecodeString(encodedProtectedHeader)
   json.Unmarshal(decodedHeader, &protectedHeader)
